@@ -110,7 +110,7 @@ class _GameControlPanelState extends State<GameControlPanel> with SingleTickerPr
                     ),
                     const SizedBox(height: 8),
                     SizedBox(
-                      height: 80, // Anpassung für reduzierte Leistenhöhe
+                      height: 80,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(

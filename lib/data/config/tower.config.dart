@@ -87,7 +87,7 @@ class TowerConfigs {
       color: Colors.lightBlue,
       special: TowerSpecialEffect(
         type: EffectType.frost,
-        duration: 5.0,
+        duration: 3.0,
       ),
     ),
     'poison': TowerConfig(
@@ -101,8 +101,8 @@ class TowerConfigs {
       color: Colors.purple,
       special: TowerSpecialEffect(
         type: EffectType.poison,
-        duration: 5.0,
-        damagePerSecond: 5.0,
+        duration: 3.0, 
+        damagePerSecond: 20.0,
       ),
     ),
     'laser': TowerConfig(

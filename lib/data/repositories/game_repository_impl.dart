@@ -18,10 +18,11 @@ class GameRepositoryImpl implements GameRepository {
       await localStorage.saveInt('level_${levelId}_stars', stars);
       await localStorage.saveBool('level_${levelId}_completed', true);
 
-      // Update the highest unlocked level if needed
-      final currentHighest = await getHighestUnlockedLevel();
-      if (levelId + 1 > currentHighest) {
-        await localStorage.saveInt('highest_unlocked_level', levelId + 1);
+      if (levelId >= 1 && levelId <= 14) {
+        final currentHighest = await getHighestUnlockedLevel();
+        if (levelId + 1 > currentHighest) {
+          await localStorage.saveInt('highest_unlocked_level', levelId + 1);
+        }
       }
 
       return true;
@@ -47,13 +48,11 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<bool> isLevelCompleted(int levelId) async {
-    return true;
     return localStorage.getBool('level_${levelId}_completed');
   }
 
   @override
   Future<int> getHighestUnlockedLevel() async {
-    return 20;
     return localStorage.getInt('highest_unlocked_level', defaultValue: 1);
   }
 

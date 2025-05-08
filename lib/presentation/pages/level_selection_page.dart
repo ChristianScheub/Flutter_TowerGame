@@ -15,8 +15,8 @@ class LevelSelectionPage extends StatefulWidget {
 
 class _LevelSelectionPageState extends State<LevelSelectionPage> {
   final gameRepository = GetIt.instance<GameRepository>();
-  List<bool> completedLevels = List.filled(5, false);
-  int highestUnlockedLevel = 15;
+  List<bool> completedLevels = List.filled(15, false);  // Korrigiert auf 15 Level
+  int highestUnlockedLevel = 1;  // Startet mit Level 1 freigeschaltet
 
   @override
   void initState() {

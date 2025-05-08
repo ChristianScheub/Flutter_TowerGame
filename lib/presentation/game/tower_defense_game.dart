@@ -12,6 +12,7 @@ import 'package:tower_defense_game/presentation/game/components/projectile.dart'
 import 'package:tower_defense_game/presentation/game/components/tower.dart';
 import 'package:tower_defense_game/presentation/game/components/victory_effect.dart';
 import 'package:tower_defense_game/presentation/game/components/game_over_effect.dart';
+import 'dart:math';
 
 class TowerDefenseGame extends FlameGame
     with TapCallbacks, DragCallbacks, ScrollDetector {
@@ -161,16 +162,13 @@ class TowerDefenseGame extends FlameGame
       tower.findTarget(enemies);
     }
 
+    // Projektil-Logik zentral verarbeiten
     for (final projectile in [...projectiles]) {
       final hitEnemy = projectile.checkHit(enemies);
       if (hitEnemy != null) {
-        if (hitEnemy.takeDamage(projectile.damage)) {
-          resources += hitEnemy.reward;
-          enemies.remove(hitEnemy);
-          hitEnemy.removeFromParent();
-        }
-        projectile.removeFromParent();
+        _handleProjectileHit(projectile, hitEnemy);
         projectiles.remove(projectile);
+        projectile.removeFromParent();
       }
     }
 
@@ -208,6 +206,30 @@ class TowerDefenseGame extends FlameGame
     }
   }
 
+  void _handleProjectileHit(Projectile projectile, Enemy enemy) {
+    // Effekte vor Schaden anwenden
+    if (projectile.config.special != null) {
+      switch (projectile.config.special!.type) {
+        case EffectType.frost:
+          enemy.applyFrostEffect(projectile.config.special!.duration);
+          break;
+        case EffectType.poison:
+          enemy.applyPoisonEffect(
+            projectile.config.special!.damagePerSecond!,
+            projectile.config.special!.duration,
+          );
+          break;
+      }
+    }
+
+    // Schaden anwenden und Gegner entfernen wenn tot
+    if (enemy.takeDamage(projectile.damage)) {
+      resources += enemy.reward;
+      enemies.remove(enemy);
+      enemy.removeFromParent();
+    }
+  }
+
   void _spawnNextEnemy() {
     if (enemiesLeftToSpawn <= 0) return;
 
@@ -221,11 +243,15 @@ class TowerDefenseGame extends FlameGame
     }
 
     if (typeToSpawn != null) {
-      final startPoint = gameMap.paths.first.first;
+      // Wähle einen zufälligen Pfad für den Spawn
+      final random = Random();
+      final pathIndex = random.nextInt(gameMap.paths.length);
+      final path = gameMap.paths[pathIndex];
+      
       final enemy = Enemy.create(
         type: typeToSpawn,
-        position: startPoint.clone(),
-        path: gameMap.paths.first,
+        position: path.first.clone(), // Benutze den Startpunkt des gewählten Pfads
+        path: path,
         difficultyMultiplier: difficultyMultiplier,
       );
 

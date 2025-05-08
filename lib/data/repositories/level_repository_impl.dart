@@ -12,7 +12,7 @@ class LevelRepositoryImpl implements LevelRepository {
       isEndless: false,
       mapAsset: 'assets/maps/level1.json',
       waves: 5,
-      initialResources: 300,
+      initialResources: 400,
       maxLives: 20,
     ),
     const Level(
@@ -322,8 +322,10 @@ class LevelRepositoryImpl implements LevelRepository {
   List<Map<String, int>> _generateStartPoints(String levelId) {
     if (isEndlessMode(levelId)) {
       return [
-        {'x': 0, 'y': 3},
-        {'x': 19, 'y': 8},
+        {'x': 0, 'y': 3},   // Links oben
+        {'x': 0, 'y': 8},   // Links unten
+        {'x': 19, 'y': 3},  // Rechts oben
+        {'x': 19, 'y': 8},  // Rechts unten
       ];
     }
     
@@ -421,8 +423,7 @@ class LevelRepositoryImpl implements LevelRepository {
   List<Map<String, int>> _generateEndPoints(String levelId) {
     if (isEndlessMode(levelId)) {
       return [
-        {'x': 19, 'y': 3},
-        {'x': 0, 'y': 8},
+        {'x': 10, 'y': 6},  // Zentraler Endpunkt
       ];
     }
     
@@ -515,17 +516,33 @@ class LevelRepositoryImpl implements LevelRepository {
   List<List<Map<String, int>>> _generatePaths(String levelId) {
     if (isEndlessMode(levelId)) {
       return [
+        // Von links oben zum Zentrum
         [
           {'x': 0, 'y': 3},
-          {'x': 18, 'y': 3},
-          {'x': 18, 'y': 8},
-          {'x': 0, 'y': 8},
+          {'x': 5, 'y': 3},
+          {'x': 5, 'y': 6},
+          {'x': 10, 'y': 6},
         ],
+        // Von links unten zum Zentrum
+        [
+          {'x': 0, 'y': 8},
+          {'x': 5, 'y': 8},
+          {'x': 5, 'y': 6},
+          {'x': 10, 'y': 6},
+        ],
+        // Von rechts oben zum Zentrum
+        [
+          {'x': 19, 'y': 3},
+          {'x': 15, 'y': 3},
+          {'x': 15, 'y': 6},
+          {'x': 10, 'y': 6},
+        ],
+        // Von rechts unten zum Zentrum
         [
           {'x': 19, 'y': 8},
-          {'x': 1, 'y': 8},
-          {'x': 1, 'y': 3},
-          {'x': 19, 'y': 3},
+          {'x': 15, 'y': 8},
+          {'x': 15, 'y': 6},
+          {'x': 10, 'y': 6},
         ],
       ];
     }
@@ -712,6 +729,31 @@ class LevelRepositoryImpl implements LevelRepository {
 
   List<Map<String, int>> _generateBuildableTiles(String levelId) {
     final tiles = <Map<String, int>>[];
+    
+    if (isEndlessMode(levelId)) {
+      // Strategische Bauplätze für den Endlos-Modus
+      // Zentrale Bauplätze
+      for (int x = 8; x <= 12; x += 2) {
+        for (int y = 4; y <= 8; y += 2) {
+          tiles.add({'x': x, 'y': y});
+        }
+      }
+      
+      // Äußere Bauplätze
+      for (int x = 2; x <= 17; x += 3) {
+        tiles.add({'x': x, 'y': 2}); // Oben
+        tiles.add({'x': x, 'y': 9}); // Unten
+      }
+      
+      // Seitliche Bauplätze
+      for (int y = 3; y <= 8; y += 2) {
+        tiles.add({'x': 3, 'y': y});  // Links
+        tiles.add({'x': 16, 'y': y}); // Rechts
+      }
+      
+      return tiles;
+    }
+    
     final id = int.tryParse(levelId) ?? 1;
     
     // Create base buildable areas

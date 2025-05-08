@@ -4,6 +4,7 @@ import 'package:tower_defense_game/data/config/tower.config.dart';
 import 'package:tower_defense_game/presentation/game/components/enemy.dart';
 import 'package:tower_defense_game/presentation/game/components/projectile.dart';
 import 'package:tower_defense_game/presentation/game/tower_defense_game.dart';
+import 'dart:math';
 
 class Tower extends PositionComponent with HasGameRef<TowerDefenseGame> {
   final TowerConfig config;
@@ -75,27 +76,34 @@ class Tower extends PositionComponent with HasGameRef<TowerDefenseGame> {
     
     timeSinceLastShot += dt;
     
-    if (target != null && timeSinceLastShot >= 1 / fireRate) {
-      _fireAt(target!);
-      timeSinceLastShot = 0;
+    if (target != null && (target!.health <= 0 || !_isInRange(target!))) {
+        target = null;
     }
     
-    if (target != null) {
-      if (target!.health <= 0 || !_isInRange(target!)) {
+    if (Random().nextDouble() < 0.35) {
         target = null;
-      }
+    }
+    
+    // Schießen wenn bereit
+    if (target != null && timeSinceLastShot >= 1 / fireRate) {
+        _fireAt(target!);
+        timeSinceLastShot = 0;
     }
   }
 
   void findTarget(List<Enemy> enemies) {
     if (target != null) return;
     
-    for (final enemy in enemies) {
-      if (_isInRange(enemy)) {
-        target = enemy;
-        break;
-      }
-    }
+    // Liste aller erreichbaren Gegner erstellen
+    final reachableEnemies = enemies.where((enemy) => _isInRange(enemy)).toList();
+    
+    // Wenn keine Gegner in Reichweite sind, return
+    if (reachableEnemies.isEmpty) return;
+    
+    // Zufälligen Gegner aus der Liste auswählen
+    final random = Random();
+    final randomIndex = random.nextInt(reachableEnemies.length);
+    target = reachableEnemies[randomIndex];
   }
 
   bool _isInRange(Enemy enemy) {
@@ -104,7 +112,7 @@ class Tower extends PositionComponent with HasGameRef<TowerDefenseGame> {
 
   void _fireAt(Enemy target) {
     final projectile = Projectile(
-      config: config,
+      config: TowerConfigs.towers[config.id]!,  // Hier war der Fehler - wir müssen die Original-Config verwenden
       position: position.clone(),
       target: target,
       damage: damage,
@@ -115,6 +123,8 @@ class Tower extends PositionComponent with HasGameRef<TowerDefenseGame> {
   }
 
   int upgrade() {
+    if (level >= 15) return -1; 
+    
     level++;
     damage *= 1.2;  // 20% damage increase
     range *= 1.1;   // 10% range increase

@@ -38,7 +38,7 @@ class MainMenuPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'TOWER DEFENSE',
+                  'Tactical Blocks',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
