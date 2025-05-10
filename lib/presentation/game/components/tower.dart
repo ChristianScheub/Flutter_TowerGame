@@ -123,7 +123,7 @@ class Tower extends PositionComponent with HasGameRef<TowerDefenseGame> {
   }
 
   int upgrade() {
-    if (level >= 15) return -1; 
+    if (level >= 7) return -1; 
     
     level++;
     damage *= 1.2;  // 20% damage increase

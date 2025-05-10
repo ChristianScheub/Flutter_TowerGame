@@ -41,7 +41,7 @@ class UpgradeDialog extends StatelessWidget {
           child: Text(local.cancel),
         ),
         ElevatedButton(
-          onPressed: game.resources >= cost
+          onPressed: (game.resources >= cost && tower.level < 7)
               ? () {
                   game.upgradeTower(tower);
                   Navigator.pop(context);
