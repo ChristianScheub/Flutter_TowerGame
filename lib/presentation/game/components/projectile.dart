@@ -46,7 +46,7 @@ class Projectile extends PositionComponent with HasGameRef<TowerDefenseGame> {
     if (config.special != null) {
       switch (config.special!.type) {
         case EffectType.frost:
-          return Paint()..color = Colors.yellow;
+          return Paint()..color = Colors.blueAccent;
         case EffectType.poison:
           return Paint()..color = Colors.green;
         default:

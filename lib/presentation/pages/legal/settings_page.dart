@@ -32,7 +32,7 @@ class SettingsPage extends StatelessWidget {
             title: Text(local.githubRepository),
             subtitle: Text(local.viewSourceCode),
             onTap: () => launchUrl(
-              Uri.parse('https://github.com/dennisfischertowerdefense'),
+              Uri.parse('https://github.com/ChristianScheub/Flutter_TowerGame'),
               mode: LaunchMode.externalApplication,
             ),
           ),

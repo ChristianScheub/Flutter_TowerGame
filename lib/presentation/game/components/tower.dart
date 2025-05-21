@@ -64,9 +64,8 @@ class Tower extends PositionComponent with HasGameRef<TowerDefenseGame> {
   }
 
   Color _getTowerColor() {
-    double luminance = 0.1 * level;
     return HSLColor.fromColor(config.color)
-        .withLightness((HSLColor.fromColor(config.color).lightness + luminance).clamp(0.0, 1.0))
+        .withLightness((HSLColor.fromColor(config.color).lightness).clamp(0.0, 1.0))
         .toColor();
   }
 
